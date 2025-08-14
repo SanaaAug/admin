@@ -1,6 +1,9 @@
-import React, { useEffect, useRef } from 'react'
+
+
+import React from 'react'
 import { NavLink } from 'react-router-dom'
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 import {
   CContainer,
   CDropdown,
@@ -9,131 +12,235 @@ import {
   CDropdownToggle,
   CHeader,
   CHeaderNav,
-  CHeaderToggler,
-  CNavLink,
   CNavItem,
-  useColorModes,
+  CNavLink,
+  CSidebarToggler,
+  CButtonGroup,
+  CButton
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import {
   cilBell,
-  cilContrast,
   cilEnvelopeOpen,
   cilList,
   cilMenu,
+  cilAccountLogout,
+  cilUser,
+  cilClock,
   cilMoon,
   cilSun,
+  cilContrast,
+  cilSpeedometer,
+  cilSettings
 } from '@coreui/icons'
-
-import { AppBreadcrumb } from './index'
-import { AppHeaderDropdown } from './header/index'
+import { useColorModes } from '@coreui/react'
 
 const AppHeader = () => {
-  const headerRef = useRef()
-  const { colorMode, setColorMode } = useColorModes('coreui-free-react-admin-template-theme')
-
   const dispatch = useDispatch()
-  const sidebarShow = useSelector((state) => state.sidebarShow)
-
-  useEffect(() => {
-    document.addEventListener('scroll', () => {
-      headerRef.current &&
-        headerRef.current.classList.toggle('shadow-sm', document.documentElement.scrollTop > 0)
-    })
-  }, [])
+  const navigate = useNavigate()
+  const admin = useSelector(state => state.admin)
+  
+  // Theme functionality
+  const { colorMode, setColorMode } = useColorModes('coreui-free-react-admin-template-theme')
+  
+  // Get current time
+  const getCurrentTime = () => {
+    return new Date().toISOString().replace('T', ' ').substring(0, 19)
+  }
+  
+  const handleLogout = () => {
+    localStorage.removeItem('token')
+    localStorage.removeItem('admin')
+    dispatch({ type: 'logout' })
+    navigate('/login')
+  }
 
   return (
-    <CHeader position="sticky" className="mb-4 p-0" ref={headerRef}>
-      <CContainer className="border-bottom px-4" fluid>
-        <CHeaderToggler
-          onClick={() => dispatch({ type: 'set', sidebarShow: !sidebarShow })}
-          style={{ marginInlineStart: '-14px' }}
-        >
-          <CIcon icon={cilMenu} size="lg" />
-        </CHeaderToggler>
-        <CHeaderNav className="d-none d-md-flex">
-          <CNavItem>
-            <CNavLink to="/dashboard" as={NavLink}>
-              Dashboard
-            </CNavLink>
-          </CNavItem>
-          <CNavItem>
-            <CNavLink href="#">Users</CNavLink>
-          </CNavItem>
-          <CNavItem>
-            <CNavLink href="#">Settings</CNavLink>
-          </CNavItem>
-        </CHeaderNav>
-        <CHeaderNav className="ms-auto">
-          <CNavItem>
-            <CNavLink href="#">
-              <CIcon icon={cilBell} size="lg" />
-            </CNavLink>
-          </CNavItem>
-          <CNavItem>
-            <CNavLink href="#">
-              <CIcon icon={cilList} size="lg" />
-            </CNavLink>
-          </CNavItem>
-          <CNavItem>
-            <CNavLink href="#">
-              <CIcon icon={cilEnvelopeOpen} size="lg" />
-            </CNavLink>
-          </CNavItem>
-        </CHeaderNav>
-        <CHeaderNav>
-          <li className="nav-item py-1">
-            <div className="vr h-100 mx-2 text-body text-opacity-75"></div>
-          </li>
-          <CDropdown variant="nav-item" placement="bottom-end">
-            <CDropdownToggle caret={false}>
-              {colorMode === 'dark' ? (
-                <CIcon icon={cilMoon} size="lg" />
-              ) : colorMode === 'auto' ? (
-                <CIcon icon={cilContrast} size="lg" />
-              ) : (
-                <CIcon icon={cilSun} size="lg" />
-              )}
+    <CHeader position="sticky" className="border-bottom">
+      <CContainer fluid className="d-flex align-items-center">
+        {/* Left side - Sidebar Toggle & Navigation */}
+        <div className="d-flex align-items-center">
+          <CSidebarToggler
+            className="ps-1 me-3"
+            onClick={() => dispatch({ type: 'set', sidebarShow: true })}
+          />
+          
+          {/* Main Navigation Links */}
+          <CHeaderNav className="d-none d-lg-flex">
+            <CNavItem className="me-2">
+              <CNavLink 
+                to="/dashboard" 
+                as={NavLink}
+                className="d-flex align-items-center px-3 py-2 rounded"
+                style={{
+                  textDecoration: 'none',
+                  transition: 'all 0.2s ease-in-out'
+                }}
+                activeStyle={{
+                  backgroundColor: 'var(--cui-primary)',
+                  color: 'white'
+                }}
+              >
+                <CIcon icon={cilSpeedometer} className="me-2" />
+                <span className="fw-medium">Dashboard</span>
+              </CNavLink>
+            </CNavItem>
+            <CNavItem>
+              <CNavLink 
+                to="/admin" 
+                as={NavLink}
+                className="d-flex align-items-center px-3 py-2 rounded"
+                style={{
+                  textDecoration: 'none',
+                  transition: 'all 0.2s ease-in-out'
+                }}
+                activeStyle={{
+                  backgroundColor: 'var(--cui-primary)',
+                  color: 'white'
+                }}
+              >
+                <CIcon icon={cilSettings} className="me-2" />
+                <span className="fw-medium">Admins</span>
+              </CNavLink>
+            </CNavItem>
+          </CHeaderNav>
+        </div>
+
+        {/* Center - Current Time */}
+        <div className="flex-grow-1 d-flex justify-content-center">
+          <div className="d-flex align-items-center text-muted">
+            <CIcon icon={cilClock} className="me-2" />
+            <span className="small">
+              <strong>{getCurrentTime()}</strong>
+            </span>
+          </div>
+        </div>
+
+        {/* Right side - Theme Toggle & User Menu */}
+        <div className="d-flex align-items-center">
+          {/* Mobile Navigation Dropdown */}
+          <CDropdown className="d-lg-none me-2">
+            <CDropdownToggle 
+              color="light" 
+              variant="outline" 
+              size="sm"
+              caret={false}
+            >
+              <CIcon icon={cilList} />
             </CDropdownToggle>
             <CDropdownMenu>
-              <CDropdownItem
-                active={colorMode === 'light'}
-                className="d-flex align-items-center"
-                as="button"
-                type="button"
-                onClick={() => setColorMode('light')}
-              >
-                <CIcon className="me-2" icon={cilSun} size="lg" /> Light
+              <CDropdownItem as={NavLink} to="/dashboard">
+                <CIcon icon={cilSpeedometer} className="me-2" />
+                Dashboard
               </CDropdownItem>
-              <CDropdownItem
-                active={colorMode === 'dark'}
-                className="d-flex align-items-center"
-                as="button"
-                type="button"
-                onClick={() => setColorMode('dark')}
-              >
-                <CIcon className="me-2" icon={cilMoon} size="lg" /> Dark
-              </CDropdownItem>
-              <CDropdownItem
-                active={colorMode === 'auto'}
-                className="d-flex align-items-center"
-                as="button"
-                type="button"
-                onClick={() => setColorMode('auto')}
-              >
-                <CIcon className="me-2" icon={cilContrast} size="lg" /> Auto
+              <CDropdownItem as={NavLink} to="/admin">
+                <CIcon icon={cilSettings} className="me-2" />
+                Admins
               </CDropdownItem>
             </CDropdownMenu>
           </CDropdown>
-          <li className="nav-item py-1">
-            <div className="vr h-100 mx-2 text-body text-opacity-75"></div>
-          </li>
-          <AppHeaderDropdown />
-        </CHeaderNav>
+
+          {/* Theme Toggle Buttons */}
+          <div className="me-3">
+            <CButtonGroup role="group" size="sm">
+              <CButton
+                color={colorMode === 'light' ? 'primary' : 'light'}
+                variant={colorMode === 'light' ? 'solid' : 'outline'}
+                onClick={() => setColorMode('light')}
+                title="Light Mode"
+                className="px-2"
+              >
+                <CIcon icon={cilSun} size="sm" />
+              </CButton>
+              <CButton
+                color={colorMode === 'dark' ? 'primary' : 'light'}
+                variant={colorMode === 'dark' ? 'solid' : 'outline'}
+                onClick={() => setColorMode('dark')}
+                title="Dark Mode"
+                className="px-2"
+              >
+                <CIcon icon={cilMoon} size="sm" />
+              </CButton>
+              <CButton
+                color={colorMode === 'auto' ? 'primary' : 'light'}
+                variant={colorMode === 'auto' ? 'solid' : 'outline'}
+                onClick={() => setColorMode('auto')}
+                title="Auto Mode"
+                className="px-2"
+              >
+                <CIcon icon={cilContrast} size="sm" />
+              </CButton>
+            </CButtonGroup>
+          </div>
+
+          {/* User Dropdown */}
+          <CDropdown placement="bottom-end">
+            <CDropdownToggle as={CNavLink} className="py-0 pe-0" caret={false}>
+              <div 
+                className="d-flex align-items-center px-3 py-2 rounded"
+                style={{
+                  border: '1px solid var(--cui-border-color)',
+                  transition: 'all 0.2s ease-in-out'
+                }}
+              >
+                <CIcon icon={cilUser} className="me-2" />
+                <div className="d-flex flex-column align-items-start">
+                  <span className="fw-medium small">
+                    {admin?.username || 'unknown'}
+                  </span>
+                  <span className="text-muted" style={{ fontSize: '0.75rem' }}>
+                    Administrator
+                  </span>
+                </div>
+              </div>
+            </CDropdownToggle>
+            <CDropdownMenu className="pt-0" style={{ minWidth: '200px' }}>
+              <CDropdownItem header className="text-center">
+                {/* <div className="fw-bold">Account Menu</div> */}
+                <small className="text-muted">{admin?.username || 'unknown'}</small>
+              </CDropdownItem>
+              {/* <CDropdownItem divider />
+              <CDropdownItem>
+                <CIcon icon={cilUser} className="me-2" />
+                Profile Settings
+              </CDropdownItem>
+              <CDropdownItem>
+                <CIcon icon={cilBell} className="me-2" />
+                Notifications
+                <span className="badge bg-danger ms-auto">3</span>
+              </CDropdownItem>
+              <CDropdownItem>
+                <CIcon icon={cilSettings} className="me-2" />
+                System Settings
+              </CDropdownItem> */}
+              <CDropdownItem divider />
+              <CDropdownItem onClick={handleLogout} className="text-danger">
+                <CIcon icon={cilAccountLogout} className="me-2" />
+                <strong>Logout</strong>
+              </CDropdownItem>
+            </CDropdownMenu>
+          </CDropdown>
+        </div>
       </CContainer>
-      <CContainer className="px-4" fluid>
-        <AppBreadcrumb />
-      </CContainer>
+
+      <style jsx>{`
+        .nav-link:hover {
+          background-color: var(--cui-primary-bg-subtle) !important;
+          color: var(--cui-primary) !important;
+          transform: translateY(-1px);
+        }
+        
+        .dropdown-toggle:hover div {
+          background-color: var(--cui-primary-bg-subtle) !important;
+          border-color: var(--cui-primary) !important;
+        }
+        
+        @media (max-width: 991px) {
+          .flex-grow-1 {
+            flex-grow: 0 !important;
+          }
+        }
+      `}</style>
     </CHeader>
   )
 }
