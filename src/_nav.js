@@ -69,7 +69,7 @@ const _nav = [
     component: CNavItem,
     name: 'Admins',
     to: '/admin',
-    icon: <CIcon icon={cilSettings} className="me-2" />
+    icon: <CIcon icon={cilSettings} className="nav-icon" />
   }
 ]
 
