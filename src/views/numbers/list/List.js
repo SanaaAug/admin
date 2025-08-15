@@ -54,12 +54,7 @@ const getAuthHeaders = () => {
 
 const List = () => {
   // Get current admin from Redux
-  const admin = useSelector(state => state.admin) || { 
-    username: 'SanaaAug', 
-    id: 1, 
-    uuid: '550e8400-e29b-41d4-a716-446655440001',
-    company_id: 'e1b21e25-0c31-4a1e-8d8e-f658597e7420' 
-  };
+  const admin = useSelector(state => state.admin);
 
   // Data state
   const [numbers, setNumbers] = useState([]);

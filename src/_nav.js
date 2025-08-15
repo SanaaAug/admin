@@ -4,6 +4,7 @@ import {
   cilDialpad,
   cilGroup,
   cilSpeedometer,
+  cilSettings
 } from '@coreui/icons'
 import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
 
@@ -48,16 +49,28 @@ const _nav = [
     items: [
       {
         component: CNavItem,
-        name: 'Numbers',
+        name: 'List',
         to: '/numbers/list'
       },
       {
         component: CNavItem,
-        name: 'Create',
+        name: 'Assign',
         to: '/numbers/create'
       }
     ]
   },
+  {
+    component: CNavItem,
+    name: 'Dashboard',
+    to: '/dashboard',
+    icon: <CIcon icon={cilSpeedometer} className="nav-icon" />
+  },
+  {
+    component: CNavItem,
+    name: 'Admins',
+    to: '/admin',
+    icon: <CIcon icon={cilSettings} className="me-2" />
+  }
 ]
 
 export default _nav

@@ -6,9 +6,11 @@ import SimpleBar from 'simplebar-react'
 import 'simplebar-react/dist/simplebar.min.css'
 
 import { CBadge, CNavLink, CSidebarNav } from '@coreui/react'
+import { useSelector } from 'react-redux'
 
 
 export const AppSidebarNav = ({ items }) => {
+  const admin = useSelector(state => state.admin);
   const navLink = (name, icon, badge, indent = false) => {
     return (
       <>
@@ -61,10 +63,11 @@ export const AppSidebarNav = ({ items }) => {
     )
   }
 
+  
   return (
     <CSidebarNav as={SimpleBar}>
       {items &&
-        items.map((item, index) => (item.items ? navGroup(item, index) : navItem(item, index)))}
+        items.map((item, index) => admin.role === 'admin' ? item.items && navGroup(item, index) : (item.items ? navGroup(item, index) : navItem(item, index)))}
     </CSidebarNav>
   )
 }

@@ -66,7 +66,7 @@ const AppHeader = () => {
           />
           
           {/* Main Navigation Links */}
-          <CHeaderNav className="d-none d-lg-flex">
+          {/* <CHeaderNav className="d-none d-lg-flex">
             <CNavItem className="me-2">
               <CNavLink 
                 to="/dashboard" 
@@ -103,7 +103,7 @@ const AppHeader = () => {
                 <span className="fw-medium">Admins</span>
               </CNavLink>
             </CNavItem>
-          </CHeaderNav>
+          </CHeaderNav> */}
         </div>
 
         {/* Center - Current Time */}
@@ -128,7 +128,7 @@ const AppHeader = () => {
             >
               <CIcon icon={cilList} />
             </CDropdownToggle>
-            <CDropdownMenu>
+            {/* <CDropdownMenu>
               <CDropdownItem as={NavLink} to="/dashboard">
                 <CIcon icon={cilSpeedometer} className="me-2" />
                 Dashboard
@@ -137,7 +137,7 @@ const AppHeader = () => {
                 <CIcon icon={cilSettings} className="me-2" />
                 Admins
               </CDropdownItem>
-            </CDropdownMenu>
+            </CDropdownMenu> */}
           </CDropdown>
 
           {/* Theme Toggle Buttons */}

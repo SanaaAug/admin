@@ -17,8 +17,6 @@ const routes = [
   { path: '/dashboard', name: 'Dashboard', element: Dashboard },
   { path: '/admin', name: 'Admin', element: Admin},
   
-  
-  
   { path: '/employees', name: 'Employees', element: UpdateEmployee, exact: true},
   { path: '/employees/create', name: 'Create', element: CreateEmployee},
   { path: '/employees/update', name: 'Update', element: UpdateEmployee},
