@@ -81,7 +81,9 @@ const Login = () => {
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       
       // Navigate to dashboard
-      navigate("/dashboard");
+      admin.role === 'admin' ? navigate("/employees/create") : navigate("/dashboard");
+      
+
     } catch (err) {
       console.error('Login failed:', err);
       
